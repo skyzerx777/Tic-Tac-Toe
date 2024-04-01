@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { MouseEvent, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setFirst, setSecond } from '../state/currentPlayer/currentPlayerSlice';
 import { addCell as addFirstPlayerCell } from '../state/firstPlayerCells/firstPlayerCells';
@@ -54,23 +54,30 @@ export default function Board() {
 		return cells;
 	};
 
-	const changePlayersStatus = event => {
+	const changePlayersStatus = (event: MouseEvent) => {
 		setMoveCounter(prev => ++prev);
-		const cellIndex = +event.target.dataset.number;
-		if (boardStatus[cellIndex] === 0) {
-			if (currentPlayer.value === 1) {
-				dispatch(addFirstPlayerCell(cellIndex));
-			} else {
-				dispatch(addSecondPlayerCell(cellIndex));
-			}
-			setBoardStatus(
-				boardStatus.map((item, index) => {
-					if (cellIndex === index) {
-						return currentPlayer.value;
+		const target = event.target as HTMLElement;
+		const cellIndexString = target.getAttribute('data-number');
+		if (cellIndexString !== null) {
+			const cellIndex = +cellIndexString;
+			if (!isNaN(cellIndex)) {
+				// Ваш код далее...
+				if (boardStatus[cellIndex] === 0) {
+					if (currentPlayer.value === 1) {
+						dispatch(addFirstPlayerCell(cellIndex));
+					} else {
+						dispatch(addSecondPlayerCell(cellIndex));
 					}
-					return item;
-				})
-			);
+					setBoardStatus(
+						boardStatus.map((item, index) => {
+							if (cellIndex === index) {
+								return currentPlayer.value;
+							}
+							return item;
+						})
+					);
+				}
+			}
 		}
 	};
 
@@ -97,6 +104,7 @@ export default function Board() {
 		if (moveCounter === 9 && !firstPlayerCheck && !secondPlayerCheck) {
 			setWinner(0);
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [moveCounter]);
 
 	const openModal = () => {
@@ -104,7 +112,7 @@ export default function Board() {
 			if (winner === 0) {
 				return <Modal>Draw</Modal>;
 			} else {
-				return <Modal>Player {winner} wins!</Modal>;
+				return <Modal>{`Player ${winner} wins!`}</Modal>;
 			}
 		}
 	};

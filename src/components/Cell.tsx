@@ -2,9 +2,17 @@ import { useEffect, useRef, useState } from 'react';
 import { FaRegCircle } from 'react-icons/fa';
 import { RxCross2 } from 'react-icons/rx';
 
-export default function Cell({ changePlayer, number, playerNumber }) {
+export default function Cell({
+	changePlayer,
+	number,
+	playerNumber,
+}: {
+	changePlayer: () => void;
+	number: number;
+	playerNumber: number;
+}) {
 	const [isClicked, setIsClicked] = useState(false);
-	const cellRef = useRef();
+	const cellRef = useRef<HTMLDivElement>(null!);
 
 	const handleClick = () => {
 		if (!isClicked) {
